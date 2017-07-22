@@ -10,12 +10,15 @@ per hours or days.
 
 If your (custom) firmware can do this, then just paste this command:
 Make sure dnsmasq is reading hosts file or else the ads won't go away.
+Also make sure your router has enough storage to store the hosts file, usually 24mb won't be enough.
 
 wget http://winhelp2002.mvps.org/hosts.txt -O /etc/storage/dnsmasq/hosts
 cat /etc/storage/dnsmasq/hosts >> /etc/hosts
 wget https://adaway.org/hosts.txt -O /etc/storage/dnsmasq/hosts
 cat /etc/storage/dnsmasq/hosts >> /etc/hosts
 wget http://www.hostsfile.org/Downloads/hosts.txt -O /etc/storage/dnsmasq/hosts
+cat /etc/storage/dnsmasq/hosts >> /etc/hosts
+wget https://github.com/Kizoky/RouterHosts/blob/master/hosts1.txt -O /etc/storage/dnsmasq/hosts
 cat /etc/storage/dnsmasq/hosts >> /etc/hosts
 killall dnsmasq
 dnsmasq
