@@ -27,6 +27,11 @@ dnsmasq
 
 ## Alternative way If your router has a huge storage
 Make sure your dnsmasq.conf is configured to read these hosts (hosts1;hosts2;hosts3)
+```xml
+addn-hosts=/etc/storage/dnsmasq/hosts1
+addn-hosts=/etc/storage/dnsmasq/hosts2
+addn-hosts=/etc/storage/dnsmasq/hosts3
+```
 
 ```xml
 killall dnsmasq
