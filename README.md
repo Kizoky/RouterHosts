@@ -22,3 +22,13 @@ wget https://github.com/Kizoky/RouterHosts/blob/master/hosts1.txt -O /etc/storag
 cat /etc/storage/dnsmasq/hosts >> /etc/hosts
 killall dnsmasq
 dnsmasq
+
+## Alternative way If your router has a huge storage
+## Make sure your dnsmasq.conf is configured to read these hosts (hosts1;hosts2;hosts3)
+
+killall dnsmasq
+wget http://winhelp2002.mvps.org/hosts.txt -O /etc/storage/dnsmasq/hosts3
+wget https://adaway.org/hosts.txt -O /etc/storage/dnsmasq/hosts1
+wget http://www.hostsfile.org/Downloads/hosts.txt -O /etc/storage/dnsmasq/hosts2
+sleep 7
+dnsmasq
