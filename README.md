@@ -13,7 +13,6 @@ Make sure dnsmasq is reading hosts file or else the ads won't go away.
 Also make sure your router has enough storage to store the hosts file, usually 24mb won't be enough.
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
 wget http://winhelp2002.mvps.org/hosts.txt -O /etc/storage/dnsmasq/hosts
 cat /etc/storage/dnsmasq/hosts >> /etc/hosts
 wget https://adaway.org/hosts.txt -O /etc/storage/dnsmasq/hosts
@@ -30,7 +29,6 @@ dnsmasq
 Make sure your dnsmasq.conf is configured to read these hosts (hosts1;hosts2;hosts3)
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
 killall dnsmasq
 wget http://winhelp2002.mvps.org/hosts.txt -O /etc/storage/dnsmasq/hosts3
 wget https://adaway.org/hosts.txt -O /etc/storage/dnsmasq/hosts1
