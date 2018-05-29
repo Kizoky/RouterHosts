@@ -1,43 +1,49 @@
-## This is a simple repo for use of different hosts files
+## This is a simple repo on how to block ads on padavan firmwares
 
-I think i'm not the only one who hates every single ADs on the internet
-and with Adblocker is not itself anymore, that won't take away all ads
+I have many devices that are still unrooted, or the bootloader can't be unlocked
+As a result I blocked all ads on the router instead, this way every PC or phones/tablets won't slow down
 
 ## How to use
 
-For dummies, I suggest searching on the internet on how to figure out making a script run at only once per reboot, or If you wish
-per hours or days.
-
-If your (custom) firmware can do this, then just paste this command:
-Make sure dnsmasq is reading hosts file or else the ads won't go away.
-Also make sure your router has enough storage to store the hosts file, usually 24mb won't be enough.
+Make sure dnsmasq is reading /tmp/hosts file or else the ads won't go away.
+LAN -> DHCP Server
+Custom Configuration File "dnsmasq.conf"
+```xml
+addn-hosts=/tmp/hosts
+```
+Advanced Settings -> Customization -> Scripts -> Run After Router Started:
+ Then just copy and paste this into the end of that box
 
 ```xml
-wget http://winhelp2002.mvps.org/hosts.txt -O /etc/storage/dnsmasq/hosts
-cat /etc/storage/dnsmasq/hosts >> /etc/hosts
-wget https://adaway.org/hosts.txt -O /etc/storage/dnsmasq/hosts
-cat /etc/storage/dnsmasq/hosts >> /etc/hosts
-wget http://www.hostsfile.org/Downloads/hosts.txt -O /etc/storage/dnsmasq/hosts
-cat /etc/storage/dnsmasq/hosts >> /etc/hosts
-wget https://github.com/Kizoky/RouterHosts/blob/master/hosts1.txt -O /etc/storage/dnsmasq/hosts
-cat /etc/storage/dnsmasq/hosts >> /etc/hosts
-killall dnsmasq
-dnsmasq
+touch /tmp/hosts
+sleep 8
+logger "download Zero hosts file..." && wget -qO- "http://someonewhocares.org/hosts/zero/hosts" | awk -v r="0.0.0.0" '{sub(/^0.0.0.0/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "download MVPS hosts file..." && wget -qO- "http://winhelp2002.mvps.org/hosts.txt" | awk -v r="0.0.0.0" '{sub(/^0.0.0.0/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "download AdAway blocklist hosts file..." && wget -qO- "https://adaway.org/hosts.txt" |awk -v r="0.0.0.0" '{sub(/^127.0.0.1/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "download MalwareDomainList hosts file..." && wget -qO- "https://www.malwaredomainlist.com/hostslist/hosts.txt" |awk -v r="0.0.0.0" '{sub(/^127.0.0.1/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "download hpHosts hosts file..." && wget -qO- "http://hosts-file.net/ad_servers.txt" |awk -v r="0.0.0.0" '{sub(/^127.0.0.1/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "download Ad server hosts file..." && wget -qO- "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=dnsmasq&showintro=0&mimetype=plaintext" |awk -v r="0.0.0.0" '{sub(/^127.0.0.1/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "download Kizoky hosts file..." && wget -qO- "https://raw.githubusercontent.com/Kizoky/RouterHosts/master/hosts1.txt" |awk -v r="0.0.0.0" '{sub(/^127.0.0.1/, r)} $0 ~ "^"r' >> /tmp/temp-hosts
+logger "Updating /tmp/hosts file..." && cat /tmp/temp-hosts | sort -uk2 >> /tmp/hosts
+rm /tmp/temp-hosts && logger "/tmp/hosts file has been successfully updated."
+killall -SIGHUP dnsmasq
+```
+Then reboot your router.
+Check the logs when the router is up again, and you should see messages like
+```xml
+May 29 22:48:14 admin: download Zero hosts file...
+May 29 22:48:26 admin: download MVPS hosts file...
+May 29 22:48:29 admin: download AdAway blocklist hosts file...
+May 29 22:48:30 admin: download MalwareDomainList hosts file...
+May 29 22:48:45 admin: download hpHosts hosts file...
+May 29 22:48:54 admin: download Ad server hosts file...
+May 29 22:48:55 admin: download Kizoky hosts file...
+May 29 22:49:04 admin: Updating /tmp/hosts file...
+May 29 22:49:07 admin: /tmp/hosts file has been successfully updated.
 ```
 
-## Alternative way If your router has a huge storage
-Make sure your dnsmasq.conf is configured to read these hosts (hosts1;hosts2;hosts3)
+And finally If you did it right you should be able to see this message along:
 ```xml
-addn-hosts=/etc/storage/dnsmasq/hosts1
-addn-hosts=/etc/storage/dnsmasq/hosts2
-addn-hosts=/etc/storage/dnsmasq/hosts3
+May 29 22:53:50 dnsmasq[520]: read /tmp/hosts - 117937 addresses
 ```
 
-```xml
-killall dnsmasq
-wget http://winhelp2002.mvps.org/hosts.txt -O /etc/storage/dnsmasq/hosts3
-wget https://adaway.org/hosts.txt -O /etc/storage/dnsmasq/hosts1
-wget http://www.hostsfile.org/Downloads/hosts.txt -O /etc/storage/dnsmasq/hosts2
-sleep 7
-dnsmasq
-```
